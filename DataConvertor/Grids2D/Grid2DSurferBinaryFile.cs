@@ -5,16 +5,16 @@ namespace DataConverter.Grids2D
 {
     public class Grid2DSurferBinaryFile : IDataFile<Grid2D>
     {
-        public string DEFAULT_EXTENSION = "grd";
+        public string DefExt = "grd";
 
-        public const int HEADER_SECTION = 0x42525344;
-        public const int GRID_SECTION = 0x44495247;
-        public const int DATA_SECTION = 0x41544144;
+        public const int HeaderSection = 0x42525344;
+        public const int GridSection = 0x44495247;
+        public const int DataSection = 0x41544144;
 
-        public const int HEADER_SECTION_SIZE = 4;
-        public const int GRID_SECTION_SIZE = 72;
+        public const int HeaderSectionSize = 4;
+        public const int GridSectionSize = 72;
 
-        public const int CURRENT_VERSION = 1;
+        public const int CurrentVersion = 1;
 
         /// <summary>
         /// Запись двумерного грида в файл формата Surfer Binary Grid
@@ -27,28 +27,28 @@ namespace DataConverter.Grids2D
             BinaryWriter bw = new BinaryWriter(fs, Encoding.ASCII);
             try
             {
-                bw.Write(HEADER_SECTION);
-                bw.Write(HEADER_SECTION_SIZE);
-                bw.Write(CURRENT_VERSION);
+                bw.Write(HeaderSection);
+                bw.Write(HeaderSectionSize);
+                bw.Write(CurrentVersion);
 
-                bw.Write(GRID_SECTION);
-                bw.Write(GRID_SECTION_SIZE);
-                bw.Write(grid.nY);
-                bw.Write(grid.nX);
-                bw.Write(grid.xMin);
-                bw.Write(grid.yMin);
-                bw.Write(grid.xStep);
-                bw.Write(grid.yStep);
-                bw.Write(grid.zMin);
-                bw.Write(grid.zMax);
+                bw.Write(GridSection);
+                bw.Write(GridSectionSize);
+                bw.Write(grid.NY);
+                bw.Write(grid.NX);
+                bw.Write(grid.XMin);
+                bw.Write(grid.YMin);
+                bw.Write(grid.XStep);
+                bw.Write(grid.YStep);
+                bw.Write(grid.ZMin);
+                bw.Write(grid.ZMax);
                 bw.Write(grid.Rotation);
                 bw.Write(grid.Blanc);
 
-                bw.Write(DATA_SECTION);
-                bw.Write(grid.nY * grid.nX * sizeof(double));
-                for (int i = 0; i < grid.nY; i++)
+                bw.Write(DataSection);
+                bw.Write(grid.NY * grid.NX * sizeof(double));
+                for (int i = 0; i < grid.NY; i++)
                 {
-                    for (int j = 0; j < grid.nX; j++)
+                    for (int j = 0; j < grid.NX; j++)
                     {
                         bw.Write(grid.Values[i, j]);
                     }
@@ -64,7 +64,7 @@ namespace DataConverter.Grids2D
 
         public string DefaultExtension
         {
-            get { return DEFAULT_EXTENSION; }
+            get { return DefExt; }
         }
 
         /// <summary>
@@ -87,20 +87,20 @@ namespace DataConverter.Grids2D
                     int id = br.ReadInt32();
                     switch (id)
                     {
-                        case HEADER_SECTION:
+                        case HeaderSection:
                         {
                             ReadHeaderSection(br, grid);
                             break;
                         }
 
-                        case GRID_SECTION:
+                        case GridSection:
                         {
                             ReadGridSection(br, grid);
                             fReadGridSection = true;
                             break;
                         }
 
-                        case DATA_SECTION:
+                        case DataSection:
                         {
                             if (!fReadGridSection)
                                 throw new FileFormatException(
@@ -132,7 +132,7 @@ namespace DataConverter.Grids2D
         private static void ReadHeaderSection(BinaryReader br, Grid2D grid)
         {
             int size = br.ReadInt32();
-            if (size != HEADER_SECTION_SIZE)
+            if (size != HeaderSectionSize)
                 throw new FileFormatException("Неправильный размер секции HEADER!");
 
             int version = br.ReadInt32();
@@ -141,34 +141,34 @@ namespace DataConverter.Grids2D
         private static void ReadGridSection(BinaryReader br, Grid2D grid)
         {
             int size = br.ReadInt32();
-            if (size != GRID_SECTION_SIZE)
+            if (size != GridSectionSize)
                 throw new FileFormatException("Неправильный размер секции GRID!");
 
-            grid.nY = br.ReadInt32();
-            grid.nX = br.ReadInt32();
-            grid.xMin = br.ReadDouble();
-            grid.yMin = br.ReadDouble();
-            grid.xStep = br.ReadDouble();
-            grid.yStep = br.ReadDouble();
-            grid.zMin = br.ReadDouble();
-            grid.zMax = br.ReadDouble();
+            grid.NY = br.ReadInt32();
+            grid.NX = br.ReadInt32();
+            grid.XMin = br.ReadDouble();
+            grid.YMin = br.ReadDouble();
+            grid.XStep = br.ReadDouble();
+            grid.YStep = br.ReadDouble();
+            grid.ZMin = br.ReadDouble();
+            grid.ZMax = br.ReadDouble();
             grid.Rotation = br.ReadDouble();
             grid.Blanc = br.ReadDouble();
 
-            grid.xMax = grid.xMin + grid.xStep * (grid.nX - 1);
-            grid.yMax = grid.yMin + grid.yStep * (grid.nY - 1);
+            grid.XMax = grid.XMin + grid.XStep * (grid.NX - 1);
+            grid.YMax = grid.YMin + grid.YStep * (grid.NY - 1);
         }
 
         private static void ReadDataSection(BinaryReader br, Grid2D grid)
         {
             int size = br.ReadInt32();
-            if (size != grid.nY * grid.nX * sizeof(double))
+            if (size != grid.NY * grid.NX * sizeof(double))
                 throw new FileFormatException("Неправильный размер секции DATA!");
 
-            double[,] data = new double[grid.nY, grid.nX];
-            for (int i = 0; i < grid.nY; i++)
+            double[,] data = new double[grid.NY, grid.NX];
+            for (int i = 0; i < grid.NY; i++)
             {
-                for (int j = 0; j < grid.nX; j++)
+                for (int j = 0; j < grid.NX; j++)
                 {
                     data[i, j] = br.ReadDouble();
                 }

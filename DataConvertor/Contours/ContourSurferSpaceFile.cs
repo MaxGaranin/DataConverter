@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
+using DataConverter.Helpers;
 using DataConverter.Points;
 
 namespace DataConverter.Contours
 {
     public class ContourSurferSpaceFile : IDataFile<Contour>
     {
-        public string DEFAULT_EXTENSION = "bln";
+        public string DefExt = "bln";
 
-        public const int LINE_PAD = 12;
+        public const int LinePad = 12;
 
         /// <summary>
         /// Чтение контура из файла формата Surfer Blanking с разделителем пробел
@@ -30,7 +31,7 @@ namespace DataConverter.Contours
                 {
                     if (sLine.Trim().Length == 0) continue;
 
-                    string[] sTok = StringUtils.GetTokens(sLine, true);
+                    string[] sTok = StringHelper.GetTokens(sLine, true);
 
                     if (nPoints == 0)
                     {
@@ -56,11 +57,11 @@ namespace DataConverter.Contours
                         PointD p = new PointD();
                         try
                         {
-                            p.x = StringUtils.StrToDouble(sTok[0]);
-                            p.y = StringUtils.StrToDouble(sTok[1]);
+                            p.X = StringHelper.StrToDouble(sTok[0]);
+                            p.Y = StringHelper.StrToDouble(sTok[1]);
 
                             if (sTok.Length >= 3)
-                                p.z = StringUtils.StrToDouble(sTok[2]);
+                                p.Z = StringHelper.StrToDouble(sTok[2]);
                         }
                         catch (Exception e)
                         {
@@ -112,8 +113,8 @@ namespace DataConverter.Contours
                     k++;
                     foreach (var point in polygon.Points)
                     {
-                        sw.WriteLine(StringUtils.StrLineRightPad(
-                            LINE_PAD, true, true, point.x, point.y, point.z));
+                        sw.WriteLine(StringHelper.StrLineRightPad(
+                            LinePad, true, true, point.X, point.Y, point.Z));
                     }
                 }
             }
@@ -125,7 +126,7 @@ namespace DataConverter.Contours
 
         public string DefaultExtension
         {
-            get { return DEFAULT_EXTENSION; }
+            get { return DefExt; }
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
+using DataConverter.Helpers;
 using DataConverter.Points;
 
 namespace DataConverter.Contours
 {
     public class ContourSurferCommaFile : IDataFile<Contour>
     {
-        public static readonly char[] DEL_COMMA = {','};
+        public static readonly char[] DelComma = {','};
 
-        public string DEFAULT_EXTENSION = "bln";
+        public string DefExt = "bln";
 
         /// <summary>
         /// Чтение контура из файла формата Surfer Blanking с разделителем запятая
@@ -30,7 +31,7 @@ namespace DataConverter.Contours
                 {
                     if (sLine.Trim().Length == 0) continue;
 
-                    string[] sTok = sLine.Split(DEL_COMMA, StringSplitOptions.None);
+                    string[] sTok = sLine.Split(DelComma, StringSplitOptions.None);
 
                     if (nPoints == 0)
                     {
@@ -56,10 +57,11 @@ namespace DataConverter.Contours
                         PointD p = new PointD();
                         try
                         {
-                            p.x = StringUtils.StrToDouble(sTok[0], true);
-                            p.y = StringUtils.StrToDouble(sTok[1], true);
+                            p.X = sTok[0].StrToDouble();
+                            p.Y = sTok[1].StrToDouble();
+
                             if (sTok.Length >= 3)
-                                p.z = StringUtils.StrToDouble(sTok[2], true);
+                                p.Z = sTok[2].StrToDouble();
                         }
                         catch (FormatException)
                         {
@@ -113,8 +115,8 @@ namespace DataConverter.Contours
                     foreach (var point in polygon.Points)
                     {
                         string s = String.Format("{0}, {1}, {2}",
-                            StringUtils.DoubleToStr(point.x), StringUtils.DoubleToStr(point.y),
-                            StringUtils.DoubleToStr(point.z));
+                            point.X.DoubleToStr(), point.Y.DoubleToStr(),
+                            point.Z.DoubleToStr());
                         sw.WriteLine(s);
                     }
                 }
@@ -127,7 +129,7 @@ namespace DataConverter.Contours
 
         public string DefaultExtension
         {
-            get { return DEFAULT_EXTENSION; }
+            get { return DefExt; }
         }
     }
 }

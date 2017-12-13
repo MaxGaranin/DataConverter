@@ -15,11 +15,11 @@ namespace DataConverter
     /// </summary>
     public class Config
     {
-        public const string VERSION = "1.0.0.3";
+        public const string Version = "1.0.0.3";
 
-        public readonly string ABOUT_PROGRAM = string.Format("DataConverter {0} \n\n" +
+        public readonly string AboutProgram = string.Format("DataConverter {0} \n\n" +
                                                              "© ОАО \"Гипровостокнефть\" 2010.\n\n" +
-                                                             "Разработчик: Гаранин М.С.\n\n", VERSION);
+                                                             "Разработчик: Гаранин М.С.\n\n", Version);
 
         public DataType DataType { get; set; }
         public bool IsSubfolder { get; set; }
@@ -27,10 +27,10 @@ namespace DataConverter
         public string OutSelectedFolder { get; set; }
         public string LastPath { get; set; }
 
-        public const string CONFIG_FILE_NAME = "config.xml";
+        public const string ConfigFileName = "config.xml";
 
-        private static readonly object lockFlag = new object();
-        private static Config instance;
+        private static readonly object LockFlag = new object();
+        private static Config _instance;
 
         private Config()
         {
@@ -41,30 +41,30 @@ namespace DataConverter
         {
             get
             {
-                lock (lockFlag)
+                lock (LockFlag)
                 {
-                    if (instance == null)
+                    if (_instance == null)
                     {
                         try
                         {
                             //Пытаемся загрузить файл с диска и десериализовать его
                             using (FileStream fs =
                                 new FileStream(Path.Combine(
-                                    Path.GetDirectoryName(Application.ExecutablePath), CONFIG_FILE_NAME), FileMode.Open)
+                                    Path.GetDirectoryName(Application.ExecutablePath), ConfigFileName), FileMode.Open)
                                 )
                             {
                                 XmlSerializer xs = new XmlSerializer(typeof (Config));
-                                instance = (Config) xs.Deserialize(fs);
+                                _instance = (Config) xs.Deserialize(fs);
                             }
                         }
                         catch (Exception)
                         {
                             //Если не удалось десериализовать, то просто создаем новый экземпляр
-                            instance = new Config();
-                            instance.SetDefault();
+                            _instance = new Config();
+                            _instance.SetDefault();
                         }
                     }
-                    return instance;
+                    return _instance;
                 }
             }
         }
@@ -73,16 +73,16 @@ namespace DataConverter
         {
             using (FileStream fs =
                 new FileStream(Path.Combine(
-                    Path.GetDirectoryName(Application.ExecutablePath), CONFIG_FILE_NAME), FileMode.Create))
+                    Path.GetDirectoryName(Application.ExecutablePath), ConfigFileName), FileMode.Create))
             {
                 XmlSerializer xs = new XmlSerializer(typeof (Config));
-                xs.Serialize(fs, instance);
+                xs.Serialize(fs, _instance);
             }
         }
 
         public static void Reload()
         {
-            instance = null;
+            _instance = null;
         }
 
         public void SetDefault()

@@ -18,39 +18,39 @@ namespace DataConverter
         [DataMember] 
         public Dictionary<DataType, DataTypeStuff> TypeToFormats;
 
-        public const string CONFIG_DICT_FILE_NAME = "config_dictionary.xml";
+        public const string ConfigDictFileName = "config_dictionary.xml";
 
-        private static readonly object lockFlag = new object();
-        private static ConfigDictionary instance;
+        private static readonly object LockFlag = new object();
+        private static ConfigDictionary _instance;
 
         public static ConfigDictionary Instance
         {
             get
             {
-                lock (lockFlag)
+                lock (LockFlag)
                 {
-                    if (instance == null)
+                    if (_instance == null)
                     {
                         try
                         {
                             using (FileStream fs = new FileStream(Path.Combine(
-                                    Path.GetDirectoryName(Application.ExecutablePath), CONFIG_DICT_FILE_NAME), FileMode.Open))
+                                    Path.GetDirectoryName(Application.ExecutablePath), ConfigDictFileName), FileMode.Open))
                             {
                                 XmlDictionaryReader reader =
                                     XmlDictionaryReader.CreateTextReader(fs, Encoding.UTF8,
                                                                          new XmlDictionaryReaderQuotas(), null);
                                 DataContractSerializer ser = new DataContractSerializer(typeof (ConfigDictionary));
-                                instance = (ConfigDictionary) ser.ReadObject(reader);
+                                _instance = (ConfigDictionary) ser.ReadObject(reader);
                             }
                         }
                         catch (Exception)
                         {
                             //Если не удалось десериализовать, то просто создаем новый экземпляр
-                            instance = new ConfigDictionary();
-                            instance.SetDefault();
+                            _instance = new ConfigDictionary();
+                            _instance.SetDefault();
                         }
                     }
-                    return instance;
+                    return _instance;
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace DataConverter
         public void Save()
         {
             XmlTextWriter xw = new XmlTextWriter(Path.Combine(
-                                    Path.GetDirectoryName(Application.ExecutablePath), CONFIG_DICT_FILE_NAME), Encoding.UTF8);
+                                    Path.GetDirectoryName(Application.ExecutablePath), ConfigDictFileName), Encoding.UTF8);
             xw.Formatting = Formatting.Indented;
             XmlDictionaryWriter writer = XmlDictionaryWriter.CreateDictionaryWriter(xw);
             DataContractSerializer ser = new DataContractSerializer(this.GetType());
@@ -69,7 +69,7 @@ namespace DataConverter
 
         public void Reload()
         {
-            instance = null;
+            _instance = null;
         }
 
         public void SetDefault()

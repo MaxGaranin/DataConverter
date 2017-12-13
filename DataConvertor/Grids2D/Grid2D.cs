@@ -7,17 +7,17 @@ namespace DataConverter.Grids2D
 {
     public class Grid2D
     {
-        public int nY { get; set; }
-        public int nX { get; set; }
-        public double xStep { get; set; }
-        public double yStep { get; set; }
+        public int NY { get; set; }
+        public int NX { get; set; }
+        public double XStep { get; set; }
+        public double YStep { get; set; }
 
-        public double xMin { get; set; }
-        public double xMax { get; set; }
-        public double yMin { get; set; }
-        public double yMax { get; set; }
-        public double zMin { get; set; }
-        public double zMax { get; set; }
+        public double XMin { get; set; }
+        public double XMax { get; set; }
+        public double YMin { get; set; }
+        public double YMax { get; set; }
+        public double ZMin { get; set; }
+        public double ZMax { get; set; }
         
         public double Rotation { get; set; }
         public double Blanc { get; set; }

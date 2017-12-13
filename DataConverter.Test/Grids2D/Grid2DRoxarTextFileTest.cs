@@ -16,24 +16,24 @@ namespace DataConverter.Test.Grids2D
         {
             Grid2D grid = new Grid2DRoxarFile().Read(FILE_IN);
 
-            Assert.True(grid.nX == 819);
-            Assert.True(grid.nY == 316);
-            Assert.True(grid.xStep == 50);
-            Assert.True(grid.yStep == 50);
-            Assert.True(grid.xMin == 336533.8125);
-            Assert.True(grid.xMax == 377433.8125);
-            Assert.True(grid.yMin == 330839.3125);
-            Assert.True(grid.yMax == 346589.3125);
-            Assert.True(grid.zMin == 1296.5996);
-            Assert.True(grid.zMax == 1435.6842);
+            Assert.True(grid.NX == 819);
+            Assert.True(grid.NY == 316);
+            Assert.True(grid.XStep == 50);
+            Assert.True(grid.YStep == 50);
+            Assert.True(grid.XMin == 336533.8125);
+            Assert.True(grid.XMax == 377433.8125);
+            Assert.True(grid.YMin == 330839.3125);
+            Assert.True(grid.YMax == 346589.3125);
+            Assert.True(grid.ZMin == 1296.5996);
+            Assert.True(grid.ZMax == 1435.6842);
 
             Assert.True(grid.Values[0, 0] == 1301.1);
             Assert.True(grid.Values[0, 7] == 1301.79);
             Assert.True(grid.Values[315, 818] == 1345.45);
 
-            Assert.True(grid.Values.GetUpperBound(0) == (grid.nY - 1));
-            Assert.True(grid.Values.GetUpperBound(1) == (grid.nX - 1));
-            Assert.True(grid.Values.Length == grid.nX*grid.nY);
+            Assert.True(grid.Values.GetUpperBound(0) == (grid.NY - 1));
+            Assert.True(grid.Values.GetUpperBound(1) == (grid.NX - 1));
+            Assert.True(grid.Values.Length == grid.NX*grid.NY);
         }
 
         [Test, ExpectedException(typeof (FileFormatException))]
@@ -46,16 +46,16 @@ namespace DataConverter.Test.Grids2D
         public void WriteFile()
         {
             Grid2D grid = new Grid2D();
-            grid.nX = 3;
-            grid.nY = 2;
-            grid.xMin = 1.0;
-            grid.xMax = 7.0;
-            grid.xStep = 3.0;
-            grid.yMin = 2.0;
-            grid.yMax = 7.0;
-            grid.yStep = 5.0;
-            grid.zMin = 0.4;
-            grid.zMax = 123.2;
+            grid.NX = 3;
+            grid.NY = 2;
+            grid.XMin = 1.0;
+            grid.XMax = 7.0;
+            grid.XStep = 3.0;
+            grid.YMin = 2.0;
+            grid.YMax = 7.0;
+            grid.YStep = 5.0;
+            grid.ZMin = 0.4;
+            grid.ZMax = 123.2;
             grid.Values = new double[2,3]
                               {
                                   {0.4, 0.6, 3.45},
@@ -64,24 +64,24 @@ namespace DataConverter.Test.Grids2D
             new Grid2DRoxarFile().Write(FILE_OUT, grid);
 
             grid = new Grid2DRoxarFile().Read(FILE_OUT);
-            Assert.True(grid.nX == 3);
-            Assert.True(grid.nY == 2);
-            Assert.True(grid.xStep == 3.0);
-            Assert.True(grid.yStep == 5.0);
-            Assert.True(grid.xMin == 1.0);
-            Assert.True(grid.xMax == 7.0);
-            Assert.True(grid.yMin == 2.0);
-            Assert.True(grid.yMax == 7.0);
-            Assert.True(grid.zMin == 0.4);
-            Assert.True(grid.zMax == 123.2);
+            Assert.True(grid.NX == 3);
+            Assert.True(grid.NY == 2);
+            Assert.True(grid.XStep == 3.0);
+            Assert.True(grid.YStep == 5.0);
+            Assert.True(grid.XMin == 1.0);
+            Assert.True(grid.XMax == 7.0);
+            Assert.True(grid.YMin == 2.0);
+            Assert.True(grid.YMax == 7.0);
+            Assert.True(grid.ZMin == 0.4);
+            Assert.True(grid.ZMax == 123.2);
 
             Assert.True(grid.Values[0, 0] == 0.4);
             Assert.True(grid.Values[0, 2] == 3.45);
             Assert.True(grid.Values[1, 1] == 100.2);
 
-            Assert.True(grid.Values.GetUpperBound(0) == (grid.nY - 1));
-            Assert.True(grid.Values.GetUpperBound(1) == (grid.nX - 1));
-            Assert.True(grid.Values.Length == grid.nX*grid.nY);
+            Assert.True(grid.Values.GetUpperBound(0) == (grid.NY - 1));
+            Assert.True(grid.Values.GetUpperBound(1) == (grid.NX - 1));
+            Assert.True(grid.Values.Length == grid.NX*grid.NY);
         }
     }
 }

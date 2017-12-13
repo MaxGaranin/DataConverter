@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-
-using DataConverter.Points;
+using DataConverter.Helpers;
 
 namespace DataConverter.Grids2D
 {
     public class Grid2DRoxarFile : IDataFile<Grid2D>
     {
-        public string DEFAULT_EXTENSION = "";
+        public string DefExt = "";
 
-        public const int ROXAR_MARK = -996;
-        public const double ROXAR_NULL = 9999900.0;
-
-        public const int LINE_PAD = 12;
+        public const int RoxarMark = -996;
+        public const double RoxarNull = 9999900.0;
+        public const int LinePad = 12;
 
         /// <summary>
         /// Чтение двумерного грида из файла формата Roxar ASCII
@@ -25,7 +20,7 @@ namespace DataConverter.Grids2D
         public Grid2D Read(string fileName)
         {
             Grid2D grid = new Grid2D();
-            grid.Blanc = ROXAR_NULL;
+            grid.Blanc = RoxarNull;
             grid.Rotation = 0.0;
 
             StreamReader sr = new StreamReader(fileName);
@@ -35,16 +30,16 @@ namespace DataConverter.Grids2D
                 // Читаем заголовок файла
                 // 1 строка
                 string sLine = sr.ReadLine();
-                string[] tokens = StringUtils.GetTokens(sLine, true);
+                string[] tokens = sLine.GetTokens(true);
 
-                if (Int32.Parse(tokens[0]) != ROXAR_MARK)
+                if (Int32.Parse(tokens[0]) != RoxarMark)
                     throw new FileFormatException("Отсутствует ключевое число -996!", row);
 
-                grid.nY = Int32.Parse(tokens[1]);
+                grid.NY = Int32.Parse(tokens[1]);
                 try
                 {
-                    grid.xStep = StringUtils.StrToDouble(tokens[2]);
-                    grid.yStep = StringUtils.StrToDouble(tokens[3]);
+                    grid.XStep = tokens[2].StrToDouble();
+                    grid.YStep = tokens[3].StrToDouble();
                 }
                 catch (Exception e)
                 {
@@ -54,13 +49,13 @@ namespace DataConverter.Grids2D
 
                 // 2 строка
                 sLine = sr.ReadLine();
-                tokens = StringUtils.GetTokens(sLine, true);
+                tokens = sLine.GetTokens(true);
                 try
                 {
-                    grid.xMin = StringUtils.StrToDouble(tokens[0]);
-                    grid.xMax = StringUtils.StrToDouble(tokens[1]);
-                    grid.yMin = StringUtils.StrToDouble(tokens[2]);
-                    grid.yMax = StringUtils.StrToDouble(tokens[3]);
+                    grid.XMin = tokens[0].StrToDouble();
+                    grid.XMax = tokens[1].StrToDouble();
+                    grid.YMin = tokens[2].StrToDouble();
+                    grid.YMax = tokens[3].StrToDouble();
                 }
                 catch (Exception e)
                 {
@@ -70,57 +65,56 @@ namespace DataConverter.Grids2D
 
                 // 3 строка
                 sLine = sr.ReadLine();
-                tokens = StringUtils.GetTokens(sLine, true);
-                grid.nX = Int32.Parse(tokens[0]);
+                tokens = sLine.GetTokens(true);
+                grid.NX = Int32.Parse(tokens[0]);
                 row++;
 
                 // 4 строка
                 sr.ReadLine();
                 row++;
 
-                grid.Values = new double[grid.nY, grid.nX];
-                
-                grid.zMin = ROXAR_NULL;
-                grid.zMax = ROXAR_NULL;
+                grid.Values = new double[grid.NY, grid.NX];
+
+                grid.ZMin = RoxarNull;
+                grid.ZMax = RoxarNull;
 
                 int i = 0;
                 int j = 0;
                 while ((sLine = sr.ReadLine()) != null)
                 {
-                    tokens = StringUtils.GetTokens(sLine, true);
+                    tokens = sLine.GetTokens(true);
                     foreach (string tok in tokens)
                     {
                         try
                         {
-                            grid.Values[i, j] = StringUtils.StrToDouble(tok);
+                            grid.Values[i, j] = tok.StrToDouble();
                         }
                         catch (Exception e)
                         {
                             throw new FileFormatException("Нечисловое значение координаты точки!", row);
                         }
 
-                        if (grid.Values[i, j] != ROXAR_NULL)
+                        if (grid.Values[i, j] != RoxarNull)
                         {
-                            grid.zMin = DefineZmin(grid.zMin, grid.Values[i, j]);
-                            grid.zMax = DefineZmax(grid.zMax, grid.Values[i, j]);
+                            grid.ZMin = DefineZmin(grid.ZMin, grid.Values[i, j]);
+                            grid.ZMax = DefineZmax(grid.ZMax, grid.Values[i, j]);
                         }
 
                         j++;
-                        if (j >= grid.nX)
+                        if (j >= grid.NX)
                         {
                             i++;
-                            if (i < grid.nY) 
+                            if (i < grid.NY)
                                 j = 0;
                         }
                     }
                     row++;
                 }
 
-                if ((i != grid.nY) || (j != grid.nX))
+                if ((i != grid.NY) || (j != grid.NX))
                     throw new FileFormatException("Несоответствие заявленного и реального количества ячеек!");
-
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new FileFormatException(e.Message, row);
             }
@@ -134,17 +128,17 @@ namespace DataConverter.Grids2D
 
         private static double DefineZmin(double zMin, double val)
         {
-            if (zMin == ROXAR_NULL)
+            if (zMin == RoxarNull)
                 return val;
-            
+
             return Math.Min(zMin, val);
         }
 
         private static double DefineZmax(double zMax, double val)
         {
-            if (zMax == ROXAR_NULL)
+            if (zMax == RoxarNull)
                 return val;
-            
+
             return Math.Max(zMax, val);
         }
 
@@ -158,20 +152,19 @@ namespace DataConverter.Grids2D
             StreamWriter sw = new StreamWriter(fileName);
             try
             {
-                sw.WriteLine(StringUtils.SysSepToDec(
-                    String.Format("{0}   {1}   {2}   {3}", ROXAR_MARK, grid.nY, grid.xStep, grid.yStep)));
-                sw.WriteLine(StringUtils.SysSepToDec(
-                    String.Format("{0}   {1}   {2}   {3}", grid.xMin, grid.xMax, grid.yMin, grid.yMax)));
-                sw.WriteLine(StringUtils.SysSepToDec(
-                    String.Format("{0}   {1}   {2}   {3}", grid.nX, 0, grid.xMin, grid.yMin)));
+                sw.WriteLine(String.Format("{0}   {1}   {2}   {3}", RoxarMark, grid.NY, grid.XStep, grid.YStep)
+                    .SysSepToDec());
+                sw.WriteLine(String.Format("{0}   {1}   {2}   {3}", grid.XMin, grid.XMax, grid.YMin, grid.YMax)
+                    .SysSepToDec());
+                sw.WriteLine(String.Format("{0}   {1}   {2}   {3}", grid.NX, 0, grid.XMin, grid.YMin).SysSepToDec());
                 sw.WriteLine("0   0   0   0   0   0   0");
 
-                for (int i = 0; i < grid.nY; i++)
+                for (int i = 0; i < grid.NY; i++)
                 {
-                    for (int j = 0; j < grid.nX; j++)
+                    for (int j = 0; j < grid.NX; j++)
                     {
-                        double val = (grid.Values[i, j] != grid.Blanc) ? grid.Values[i, j] : ROXAR_NULL;
-                        string s = StringUtils.DoubleToStr(val, StringPadDirection.Right, LINE_PAD);
+                        double val = (grid.Values[i, j] != grid.Blanc) ? grid.Values[i, j] : RoxarNull;
+                        string s = val.DoubleToStr(StringPadDirection.Right, LinePad);
                         sw.Write(s);
                     }
                     sw.WriteLine();
@@ -185,12 +178,7 @@ namespace DataConverter.Grids2D
 
         public string DefaultExtension
         {
-            get { return DEFAULT_EXTENSION; }
-        }
-
-        private static string MessageWithRow(string message, int row)
-        {
-            return String.Format("Строка: {0}. {1}", row, message);
+            get { return DefExt; }
         }
     }
 }

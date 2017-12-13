@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using DataConverter.Helpers;
 using NUnit.Framework;
 
 namespace DataConverter.Test
@@ -25,7 +25,7 @@ namespace DataConverter.Test
         [Test]
         public void TestRightPad()
         {
-            string s = StringUtils.StrLineRightPad(12, true, 1.79769E+308, 1.79769E+308, 1.79769E+308);
+            string s = StringHelper.StrLineRightPad(12, true, 1.79769E+308, 1.79769E+308, 1.79769E+308);
             Console.WriteLine(s);
         }
 

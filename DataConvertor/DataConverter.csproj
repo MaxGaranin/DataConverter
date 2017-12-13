@@ -88,11 +88,12 @@
     <Compile Include="FormUtils.cs" />
     <Compile Include="Grids2D\Grid2DFileFactory.cs" />
     <Compile Include="Grids2D\Grid2DProcessor.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="IDataFile.cs" />
     <Compile Include="DataType.cs" />
-    <Compile Include="EnumHelper.cs" />
-    <Compile Include="EnumDescriptionAttribute.cs" />
-    <Compile Include="EnumTypeConverter.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Helpers\EnumDescriptionAttribute.cs" />
+    <Compile Include="Helpers\EnumTypeConverter.cs" />
     <Compile Include="FileFormatException.cs" />
     <Compile Include="FrmConverter.cs">
       <SubType>Form</SubType>
@@ -134,7 +135,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="StringUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SychronizeList.ico" />

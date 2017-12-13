@@ -46,11 +46,11 @@ namespace DataConverter.Test.Contours
                 Assert.True(contour.Polygons[0].Points.Count == 11);
                 Assert.True(contour.Polygons[1].Points.Count == 5);
 
-                Assert.True(contour.Polygons[0].Points[7].x == 40047.434875);
-                Assert.True(contour.Polygons[0].Points[7].y == 106433.270996);
+                Assert.True(contour.Polygons[0].Points[7].X == 40047.434875);
+                Assert.True(contour.Polygons[0].Points[7].Y == 106433.270996);
 
-                Assert.True(contour.Polygons[1].Points[4].x == 38443.472656);
-                Assert.True(contour.Polygons[1].Points[4].y == 104740.210938);
+                Assert.True(contour.Polygons[1].Points[4].X == 38443.472656);
+                Assert.True(contour.Polygons[1].Points[4].Y == 104740.210938);
             }
         }
 

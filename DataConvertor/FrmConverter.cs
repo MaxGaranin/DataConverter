@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-
 using DataConverter.Contours;
 using DataConverter.Grids2D;
 
@@ -70,7 +64,7 @@ namespace DataConverter
 
         private void radioDataType_CheckedChanged(object sender, EventArgs e)
         {
-            if (!((RadioButton)sender).Checked) return;
+            if (!((RadioButton) sender).Checked) return;
 
             SaveCurrentFormats();
 
@@ -278,14 +272,13 @@ namespace DataConverter
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Config.Instance.ABOUT_PROGRAM, "О программе...",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(Config.Instance.AboutProgram, "О программе...",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
     }
 }

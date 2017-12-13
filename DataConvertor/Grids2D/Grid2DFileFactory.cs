@@ -7,10 +7,10 @@ namespace DataConverter.Grids2D
 {
     public class Grid2DFileFactory
     {
-        public IDataFile<Grid2D> GetFile(Grid2DFormat Grid2DFormat)
+        public IDataFile<Grid2D> GetFile(Grid2DFormat grid2DFormat)
         {
             IDataFile<Grid2D> file;
-            switch (Grid2DFormat)
+            switch (grid2DFormat)
             {
                 case Grid2DFormat.SurferText:
                     file = new Grid2DSurferTextFile();

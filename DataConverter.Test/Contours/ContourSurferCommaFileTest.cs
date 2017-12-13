@@ -25,11 +25,11 @@ namespace DataConverter.Test.Contours
                 Assert.True(contour.Polygons[0].Points.Count == 6);
                 Assert.True(contour.Polygons[1].Points.Count == 2);
 
-                Assert.True(contour.Polygons[0].Points[4].x == 573413.882478);
-                Assert.True(contour.Polygons[0].Points[4].y == 547412.896476);
+                Assert.True(contour.Polygons[0].Points[4].X == 573413.882478);
+                Assert.True(contour.Polygons[0].Points[4].Y == 547412.896476);
 
-                Assert.True(contour.Polygons[1].Points[0].x == 575042.238886);
-                Assert.True(contour.Polygons[1].Points[0].y == 548419.51651);
+                Assert.True(contour.Polygons[1].Points[0].X == 575042.238886);
+                Assert.True(contour.Polygons[1].Points[0].Y == 548419.51651);
             }
 
             contour = new ContourSurferCommaFile().Read(FILE_IN2);
@@ -40,13 +40,13 @@ namespace DataConverter.Test.Contours
                 Assert.True(contour.Polygons[0].Points.Count == 6);
                 Assert.True(contour.Polygons[1].Points.Count == 2);
 
-                Assert.True(contour.Polygons[0].Points[5].x == 573828.373394);
-                Assert.True(contour.Polygons[0].Points[5].y == 549159.678352);
-                Assert.True(contour.Polygons[0].Points[5].z == 1.0);
+                Assert.True(contour.Polygons[0].Points[5].X == 573828.373394);
+                Assert.True(contour.Polygons[0].Points[5].Y == 549159.678352);
+                Assert.True(contour.Polygons[0].Points[5].Z == 1.0);
 
-                Assert.True(contour.Polygons[1].Points[1].x == 577055.478954);
-                Assert.True(contour.Polygons[1].Points[1].y == 548212.271052);
-                Assert.True(contour.Polygons[1].Points[1].z == 2.0);
+                Assert.True(contour.Polygons[1].Points[1].X == 577055.478954);
+                Assert.True(contour.Polygons[1].Points[1].Y == 548212.271052);
+                Assert.True(contour.Polygons[1].Points[1].Z == 2.0);
             }
         }
 
@@ -93,13 +93,13 @@ namespace DataConverter.Test.Contours
                 Assert.True(contour.Polygons[1].Points.Count == 2);
                 Assert.True(contour.Polygons[2].Points.Count == 2);
 
-                Assert.True(contour.Polygons[0].Points[2].x == 3.1);
-                Assert.True(contour.Polygons[0].Points[2].y == 3.2);
-                Assert.True(contour.Polygons[0].Points[2].z == 3.3);
+                Assert.True(contour.Polygons[0].Points[2].X == 3.1);
+                Assert.True(contour.Polygons[0].Points[2].Y == 3.2);
+                Assert.True(contour.Polygons[0].Points[2].Z == 3.3);
 
-                Assert.True(contour.Polygons[2].Points[1].x == 4);
-                Assert.True(contour.Polygons[2].Points[1].y == 5);
-                Assert.True(contour.Polygons[2].Points[1].z == 6);
+                Assert.True(contour.Polygons[2].Points[1].X == 4);
+                Assert.True(contour.Polygons[2].Points[1].Y == 5);
+                Assert.True(contour.Polygons[2].Points[1].Z == 6);
             }
         }
     }

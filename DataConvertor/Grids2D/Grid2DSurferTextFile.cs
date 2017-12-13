@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
+using DataConverter.Helpers;
 
 namespace DataConverter.Grids2D
 {
     public class Grid2DSurferTextFile : IDataFile<Grid2D>
     {
-        public string DEFAULT_EXTENSION = "grd";
+        public string DefExt = "grd";
 
-        public const string SURFER_MARK = "DSAA";
-        public const double SURFER_NULL = 1.79769E+308;
+        public const string SurferMark = "DSAA";
+        public const double SurferNull = 1.79769E+308;
 
-        public const int LINE_PAD = 12;
+        public const int LinePad = 12;
 
         /// <summary>
         /// Чтение двумерного грида из файла формата Surfer ASCII
@@ -20,7 +21,7 @@ namespace DataConverter.Grids2D
         public Grid2D Read(string fileName)
         {
             Grid2D grid = new Grid2D();
-            grid.Blanc = SURFER_NULL;
+            grid.Blanc = SurferNull;
             grid.Rotation = 0.0;
 
             StreamReader sr = new StreamReader(fileName);
@@ -30,25 +31,25 @@ namespace DataConverter.Grids2D
                 // Читаем заголовок файла
                 // 1 строка
                 string sLine = sr.ReadLine();
-                string[] tokens = StringUtils.GetTokens(sLine, true);
-                if (tokens[0] != SURFER_MARK)
+                string[] tokens = sLine.GetTokens(true);
+                if (tokens[0] != SurferMark)
                     throw new FileFormatException("Отсутствует ключевое слово DSAA!", row);
                 row++;
 
                 // 2 строка
                 sLine = sr.ReadLine();
-                tokens = StringUtils.GetTokens(sLine, true);
-                grid.nX = Int32.Parse(tokens[0]);
-                grid.nY = Int32.Parse(tokens[1]);
+                tokens = sLine.GetTokens(true);
+                grid.NX = Int32.Parse(tokens[0]);
+                grid.NY = Int32.Parse(tokens[1]);
                 row++;
 
                 // 3 строка
                 sLine = sr.ReadLine();
-                tokens = StringUtils.GetTokens(sLine, true);
+                tokens = sLine.GetTokens(true);
                 try
                 {
-                    grid.xMin = StringUtils.StrToDouble(tokens[0]);
-                    grid.xMax = StringUtils.StrToDouble(tokens[1]);
+                    grid.XMin = tokens[0].StrToDouble();
+                    grid.XMax = tokens[1].StrToDouble();
                 }
                 catch (Exception e)
                 {
@@ -58,11 +59,11 @@ namespace DataConverter.Grids2D
                 
                 // 4 строка
                 sLine = sr.ReadLine();
-                tokens = StringUtils.GetTokens(sLine, true);
+                tokens = sLine.GetTokens(true);
                 try
                 {
-                    grid.yMin = StringUtils.StrToDouble(tokens[0]);
-                    grid.yMax = StringUtils.StrToDouble(tokens[1]);
+                    grid.YMin = tokens[0].StrToDouble();
+                    grid.YMax = tokens[1].StrToDouble();
                 }
                 catch (Exception e)
                 {
@@ -72,11 +73,11 @@ namespace DataConverter.Grids2D
 
                 // 5 строка
                 sLine = sr.ReadLine();
-                tokens = StringUtils.GetTokens(sLine, true);
+                tokens = sLine.GetTokens(true);
                 try
                 {
-                    grid.zMin = StringUtils.StrToDouble(tokens[0]);
-                    grid.zMax = StringUtils.StrToDouble(tokens[1]);
+                    grid.ZMin = tokens[0].StrToDouble();
+                    grid.ZMax = tokens[1].StrToDouble();
                 }
                 catch (Exception e)
                 {
@@ -84,21 +85,21 @@ namespace DataConverter.Grids2D
                 }
                 row++;
 
-                grid.xStep = (grid.xMax - grid.xMin) / (grid.nX - 1);
-                grid.yStep = (grid.yMax - grid.yMin) / (grid.nY - 1);
-                grid.Values = new double[grid.nY, grid.nX];
+                grid.XStep = (grid.XMax - grid.XMin) / (grid.NX - 1);
+                grid.YStep = (grid.YMax - grid.YMin) / (grid.NY - 1);
+                grid.Values = new double[grid.NY, grid.NX];
 
                 int i = 0;
                 int j = 0;
                 while ((sLine = sr.ReadLine()) != null)
                 {
-                    tokens = StringUtils.GetTokens(sLine, true);
+                    tokens = sLine.GetTokens(true);
 
                     foreach (string tok in tokens)
                     {
                         try
                         {
-                            grid.Values[i, j] = StringUtils.StrToDouble(tok);
+                            grid.Values[i, j] = tok.StrToDouble();
                         }
                         catch (Exception e)
                         {
@@ -106,17 +107,17 @@ namespace DataConverter.Grids2D
                         }
 
                         j++;
-                        if (j >= grid.nX)
+                        if (j >= grid.NX)
                         {
                             i++;
-                            if (i < grid.nY)
+                            if (i < grid.NY)
                                 j = 0;
                         }
                     }
                     row++;
                 }
 
-                if ((i != grid.nY) || (j != grid.nX))
+                if ((i != grid.NY) || (j != grid.NX))
                     throw new FileFormatException("Несоответствие заявленного и реального количества ячеек!");
             }
             catch (Exception e)
@@ -141,18 +142,18 @@ namespace DataConverter.Grids2D
             StreamWriter sw = new StreamWriter(fileName);
             try
             {
-                sw.WriteLine(SURFER_MARK);
-                sw.WriteLine("{0}   {1}", grid.nX, grid.nY);
-                sw.WriteLine(StringUtils.StrLineRightPad(LINE_PAD, true, grid.xMin, grid.xMax));
-                sw.WriteLine(StringUtils.StrLineRightPad(LINE_PAD, true, grid.yMin, grid.yMax));
-                sw.WriteLine(StringUtils.StrLineRightPad(LINE_PAD, true, grid.zMin, grid.zMax));
+                sw.WriteLine(SurferMark);
+                sw.WriteLine("{0}   {1}", grid.NX, grid.NY);
+                sw.WriteLine(StringHelper.StrLineRightPad(LinePad, true, grid.XMin, grid.XMax));
+                sw.WriteLine(StringHelper.StrLineRightPad(LinePad, true, grid.YMin, grid.YMax));
+                sw.WriteLine(StringHelper.StrLineRightPad(LinePad, true, grid.ZMin, grid.ZMax));
 
-                for (int i = 0; i < grid.nY; i++)
+                for (int i = 0; i < grid.NY; i++)
                 {
-                    for (int j = 0; j < grid.nX; j++)
+                    for (int j = 0; j < grid.NX; j++)
                     {
-                        double val = (grid.Values[i, j] != grid.Blanc) ? grid.Values[i, j] : SURFER_NULL;
-                        string s = StringUtils.DoubleToStr(val, StringPadDirection.Right, LINE_PAD);
+                        double val = (grid.Values[i, j] != grid.Blanc) ? grid.Values[i, j] : SurferNull;
+                        string s = val.DoubleToStr(StringPadDirection.Right, LinePad);
                         sw.Write(s);
                     }
                     sw.WriteLine();
@@ -166,7 +167,7 @@ namespace DataConverter.Grids2D
 
         public string DefaultExtension
         {
-            get { return DEFAULT_EXTENSION; }
+            get { return DefExt; }
         }
 
         private static string MessageWithRow(string message, int row)

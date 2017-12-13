@@ -1,15 +1,16 @@
 ﻿using System;
 using System.IO;
+using DataConverter.Helpers;
 using DataConverter.Points;
 
 namespace DataConverter.Contours
 {
     public class ContourRoxarFile : IDataFile<Contour>
     {
-        public string DEFAULT_EXTENSION = "";
+        public string DefExt = "";
 
-        public const double BLOCK_DEL = 999.0;
-        public const int LINE_PAD = 12;
+        public const double BlockDel = 999.0;
+        public const int LinePad = 12;
 
         /// <summary>
         /// Чтение контура из файла формата RMS ASCII
@@ -30,21 +31,21 @@ namespace DataConverter.Contours
                 {
                     if (sLine.Trim().Length == 0) continue;
 
-                    string[] sTok = StringUtils.GetTokens(sLine, true);
+                    string[] sTok = sLine.GetTokens(true);
 
                     PointD p = new PointD();
                     try
                     {
-                        p.x = StringUtils.StrToDouble(sTok[0]);
-                        p.y = StringUtils.StrToDouble(sTok[1]);
-                        p.z = StringUtils.StrToDouble(sTok[2]);
+                        p.X = sTok[0].StrToDouble();
+                        p.Y = sTok[1].StrToDouble();
+                        p.Z = sTok[2].StrToDouble();
                     }
                     catch (Exception e)
                     {
                         throw new FileFormatException("Нечисловое значение координат точки!", row);
                     }
 
-                    if ((p.x == BLOCK_DEL) && (p.y == BLOCK_DEL) && (p.z == BLOCK_DEL))
+                    if ((p.X == BlockDel) && (p.Y == BlockDel) && (p.Z == BlockDel))
                     {
                         // Новый полигон
                         if (polygon.Points.Count > 0)
@@ -92,11 +93,11 @@ namespace DataConverter.Contours
                 {
                     foreach (var point in polygon.Points)
                     {
-                        sw.WriteLine(StringUtils.StrLineRightPad(
-                            LINE_PAD, true, point.x, point.y, point.z));
+                        sw.WriteLine(StringHelper.StrLineRightPad(
+                            LinePad, true, point.X, point.Y, point.Z));
                     }
-                    sw.WriteLine(StringUtils.StrLineRightPad(
-                        LINE_PAD, true, true, BLOCK_DEL, BLOCK_DEL, BLOCK_DEL));
+                    sw.WriteLine(StringHelper.StrLineRightPad(
+                        LinePad, true, true, BlockDel, BlockDel, BlockDel));
                 }
             }
             finally
@@ -107,7 +108,7 @@ namespace DataConverter.Contours
 
         public string DefaultExtension
         {
-            get { return DEFAULT_EXTENSION; }
+            get { return DefExt; }
         }
     }
 }

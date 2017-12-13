@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using DataConverter.Helpers;
 
 namespace DataConverter.Points
 {
@@ -11,9 +12,9 @@ namespace DataConverter.Points
     public enum PointFormat
     {
         [Description("XYZ")]
-        XYZ,
+        Xyz,
         [Description("Roxar internal point format")]
-        RoxarIPF
+        RoxarIpf
     }
 
 }
